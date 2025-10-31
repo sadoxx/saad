@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catch the Picture!</title>
+    <title>For My Love 💕</title>
     <style>
         * {
             margin: 0;
@@ -237,10 +237,10 @@
 <body>
     <!-- Game Page -->
     <div class="game-container">
-        <h1>💖 Catch the SAAD! 💖</h1>
+        <h1>💖 Catch the Picture! 💖</h1>
         <div class="instructions">
-            <p>Catch SAAD <strong>5 times</strong> to unlock a special message!</p>
-            <p>the SAAD will try to run away since u didnt let him touch your bzez</p>
+            <p>Catch the picture <strong>5 times</strong> to unlock a special message!</p>
+            <p>The picture will try to run away from your mouse, so be quick!</p>
         </div>
         
         <div class="counter">
@@ -251,7 +251,7 @@
         </div>
         
         <div class="game-area" id="gameArea">
-            <!-- REPLACE THIS IMAGE WITH YOUR GAME PICTURE -->
+            <!-- GAME PICTURE - Replace this URL -->
             <img src="image.jpg" 
                  alt="Catch me!" id="targetImage">
         </div>
@@ -265,17 +265,17 @@
             <div class="heart">💖</div>
             
             <div class="message">
-                <h1>SUCH A GOOD GIRL! 🌸</h1>
-                <p>i hope you realize how much i love you hbiba dyali💝</p>
-                <p>and that adore every little thing about you</p>
+                <h1>You're Amazing! 🌸</h1>
+                <p>Every moment with you is special and wonderful. You make my heart beat faster! 💝</p>
+                <p>Just wanted to remind you how much you mean to me! ✨</p>
             </div>
             
-            <!-- REPLACE THIS IMAGE WITH YOUR MESSAGE PICTURE -->
+            <!-- MESSAGE PICTURE - Replace this URL -->
             <img src="imagee.jpg.png" 
                  alt="Special Person" class="custom-image" id="messageImage">
             
             <div class="win-message">
-                your cute anti stress balls too
+                You caught the picture 5 times! This message is just for you! 💕
             </div>
             
             <div class="heart">💝</div>
@@ -301,44 +301,34 @@
             const requiredCount = 5;
             let isRunning = true;
             
-            // Fixed image sources - replace these in the HTML
+            // Fixed image sources
             const gameImageSrc = targetImage.src;
             const messageImageSrc = messageImage.src;
             
-            // Function to get a random position within the game area
             function getRandomPosition() {
                 const gameRect = gameArea.getBoundingClientRect();
                 const imageSize = 100;
-                
                 const minX = 0;
                 const maxX = gameRect.width - imageSize;
                 const minY = 0;
                 const maxY = gameRect.height - imageSize;
-                
                 const posX = Math.max(minX, Math.min(maxX, Math.random() * maxX));
                 const posY = Math.max(minY, Math.min(maxY, Math.random() * maxY));
-                
                 return { x: posX, y: posY };
             }
             
-            // Set initial position
             const initialPos = getRandomPosition();
             targetImage.style.left = initialPos.x + 'px';
             targetImage.style.top = initialPos.y + 'px';
             
-            // Function to move the image away from cursor
             function moveImage(event) {
                 if (!isRunning) return;
-                
                 const mouseX = event.clientX;
                 const mouseY = event.clientY;
-                
                 const imageRect = targetImage.getBoundingClientRect();
                 const gameRect = gameArea.getBoundingClientRect();
-                
                 const imageCenterX = imageRect.left + imageRect.width / 2;
                 const imageCenterY = imageRect.top + imageRect.height / 2;
-                
                 const dx = imageCenterX - mouseX;
                 const dy = imageCenterY - mouseY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
@@ -346,37 +336,28 @@
                 if (distance < 150) {
                     const angle = Math.atan2(dy, dx);
                     const speed = 25;
-                    
                     let currentX = parseFloat(targetImage.style.left) || 0;
                     let currentY = parseFloat(targetImage.style.top) || 0;
-                    
                     let newX = currentX + Math.cos(angle) * speed;
                     let newY = currentY + Math.sin(angle) * speed;
-                    
                     const maxX = gameRect.width - imageRect.width;
                     const maxY = gameRect.height - imageRect.height;
-                    
                     newX = Math.max(0, Math.min(maxX, newX));
                     newY = Math.max(0, Math.min(maxY, newY));
-                    
                     targetImage.style.left = newX + 'px';
                     targetImage.style.top = newY + 'px';
                 }
             }
             
-            // Function to handle catching the image
             function catchImage() {
                 if (!isRunning) return;
-                
                 count++;
                 countDisplay.textContent = count;
                 progressBar.style.width = (count / requiredCount) * 100 + '%';
-                
                 targetImage.style.transform = 'scale(1.3)';
                 setTimeout(() => {
                     targetImage.style.transform = 'scale(1)';
                 }, 200);
-                
                 const newPos = getRandomPosition();
                 targetImage.style.left = newPos.x + 'px';
                 targetImage.style.top = newPos.y + 'px';
@@ -390,15 +371,12 @@
                 }
             }
             
-            // Function to show the secret message page
             function showMessagePage() {
                 gameContainer.style.display = 'none';
                 messagePage.style.display = 'flex';
-                
                 addFloatingImages();
             }
             
-            // Function to add floating images to message page
             function addFloatingImages() {
                 for (let i = 0; i < 15; i++) {
                     const img = document.createElement('img');
@@ -413,14 +391,12 @@
                 }
             }
             
-            // Make sure the image is always visible when the page loads
             window.addEventListener('load', function() {
                 const newPos = getRandomPosition();
                 targetImage.style.left = newPos.x + 'px';
                 targetImage.style.top = newPos.y + 'px';
             });
             
-            // Event listeners
             gameArea.addEventListener('mousemove', moveImage);
             targetImage.addEventListener('click', catchImage);
         });
