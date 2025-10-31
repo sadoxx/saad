@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Picture!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(45deg, #ffb6c1, #ff69b4);
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            min-height: 400px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .instructions {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .counter {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+        }
+        
+        #targetImage {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
+            position: absolute;
+            transition: all 0.3s ease;
+            user-select: none;
+            z-index: 10;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        #targetImage:hover {
+            transform: scale(1.1);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+        
+        .message-page {
+            display: none;
+            background: linear-gradient(45deg, #ffb6c1, #ff69b4);
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            padding: 20px;
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .heart {
+            font-size: 100px;
+            animation: heartbeat 1.2s infinite;
+            margin: 20px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .message {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 25px;
+            border-radius: 20px;
+            margin: 20px auto;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message h1 {
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+        }
+        
+        .message p {
+            margin: 15px 0;
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+        
+        .custom-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .floating-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .floating-image {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 50%;
+            animation: floatAround 8s infinite linear;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 3px solid white;
+        }
+        
+        @keyframes floatAround {
+            from { 
+                transform: translateY(100vh) rotate(0deg); 
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            to { 
+                transform: translateY(-100px) rotate(360deg); 
+                opacity: 0;
+            }
+        }
+        
+        footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .win-message {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: #ff4081;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .game-area {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Game Page -->
+    <div class="game-container">
+        <h1>💖 Catch the SAAD! 💖</h1>
+        <div class="instructions">
+            <p>Catch SAAD <strong>5 times</strong> to unlock a special message!</p>
+            <p>the SAAD will try to run away since u didnt let him touch your bzez</p>
+        </div>
+        
+        <div class="counter">
+            Caught: <span id="count">0</span>/5
+        </div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <div class="game-area" id="gameArea">
+            <!-- REPLACE THIS IMAGE WITH YOUR GAME PICTURE -->
+            <img src="image.jpg" 
+                 alt="Catch me!" id="targetImage">
+        </div>
+    </div>
+
+    <!-- Secret Message Page (Hidden until game is won) -->
+    <div class="message-page" id="messagePage">
+        <div class="floating-container" id="floatingContainer"></div>
+        
+        <div class="container">
+            <div class="heart">💖</div>
+            
+            <div class="message">
+                <h1>SUCH A GOOD GIRL! 🌸</h1>
+                <p>i hope you realize how much i love you hbiba dyali💝</p>
+                <p>and that adore every little thing about you</p>
+            </div>
+            
+            <!-- REPLACE THIS IMAGE WITH YOUR MESSAGE PICTURE -->
+            <img src="imagee.jpg.png" 
+                 alt="Special Person" class="custom-image" id="messageImage">
+            
+            <div class="win-message">
+                your cute anti stress balls too
+            </div>
+            
+            <div class="heart">💝</div>
+            
+            <footer>
+                Made with 💖 for someone special
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const targetImage = document.getElementById('targetImage');
+            const messageImage = document.getElementById('messageImage');
+            const countDisplay = document.getElementById('count');
+            const progressBar = document.getElementById('progress');
+            const messagePage = document.getElementById('messagePage');
+            const gameContainer = document.querySelector('.game-container');
+            const floatingContainer = document.getElementById('floatingContainer');
+            const gameArea = document.getElementById('gameArea');
+            
+            let count = 0;
+            const requiredCount = 5;
+            let isRunning = true;
+            
+            // Fixed image sources - replace these in the HTML
+            const gameImageSrc = targetImage.src;
+            const messageImageSrc = messageImage.src;
+            
+            // Function to get a random position within the game area
+            function getRandomPosition() {
+                const gameRect = gameArea.getBoundingClientRect();
+                const imageSize = 100;
+                
+                const minX = 0;
+                const maxX = gameRect.width - imageSize;
+                const minY = 0;
+                const maxY = gameRect.height - imageSize;
+                
+                const posX = Math.max(minX, Math.min(maxX, Math.random() * maxX));
+                const posY = Math.max(minY, Math.min(maxY, Math.random() * maxY));
+                
+                return { x: posX, y: posY };
+            }
+            
+            // Set initial position
+            const initialPos = getRandomPosition();
+            targetImage.style.left = initialPos.x + 'px';
+            targetImage.style.top = initialPos.y + 'px';
+            
+            // Function to move the image away from cursor
+            function moveImage(event) {
+                if (!isRunning) return;
+                
+                const mouseX = event.clientX;
+                const mouseY = event.clientY;
+                
+                const imageRect = targetImage.getBoundingClientRect();
+                const gameRect = gameArea.getBoundingClientRect();
+                
+                const imageCenterX = imageRect.left + imageRect.width / 2;
+                const imageCenterY = imageRect.top + imageRect.height / 2;
+                
+                const dx = imageCenterX - mouseX;
+                const dy = imageCenterY - mouseY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    const angle = Math.atan2(dy, dx);
+                    const speed = 25;
+                    
+                    let currentX = parseFloat(targetImage.style.left) || 0;
+                    let currentY = parseFloat(targetImage.style.top) || 0;
+                    
+                    let newX = currentX + Math.cos(angle) * speed;
+                    let newY = currentY + Math.sin(angle) * speed;
+                    
+                    const maxX = gameRect.width - imageRect.width;
+                    const maxY = gameRect.height - imageRect.height;
+                    
+                    newX = Math.max(0, Math.min(maxX, newX));
+                    newY = Math.max(0, Math.min(maxY, newY));
+                    
+                    targetImage.style.left = newX + 'px';
+                    targetImage.style.top = newY + 'px';
+                }
+            }
+            
+            // Function to handle catching the image
+            function catchImage() {
+                if (!isRunning) return;
+                
+                count++;
+                countDisplay.textContent = count;
+                progressBar.style.width = (count / requiredCount) * 100 + '%';
+                
+                targetImage.style.transform = 'scale(1.3)';
+                setTimeout(() => {
+                    targetImage.style.transform = 'scale(1)';
+                }, 200);
+                
+                const newPos = getRandomPosition();
+                targetImage.style.left = newPos.x + 'px';
+                targetImage.style.top = newPos.y + 'px';
+                
+                if (count >= requiredCount) {
+                    isRunning = false;
+                    targetImage.style.width = '150px';
+                    targetImage.style.height = '150px';
+                    targetImage.style.animation = 'heartbeat 0.5s infinite';
+                    setTimeout(showMessagePage, 1500);
+                }
+            }
+            
+            // Function to show the secret message page
+            function showMessagePage() {
+                gameContainer.style.display = 'none';
+                messagePage.style.display = 'flex';
+                
+                addFloatingImages();
+            }
+            
+            // Function to add floating images to message page
+            function addFloatingImages() {
+                for (let i = 0; i < 15; i++) {
+                    const img = document.createElement('img');
+                    img.className = 'floating-image';
+                    img.src = messageImageSrc;
+                    img.alt = "Floating image";
+                    img.style.left = Math.random() * 100 + 'vw';
+                    img.style.animationDelay = Math.random() * 5 + 's';
+                    img.style.width = (Math.random() * 40 + 50) + 'px';
+                    img.style.height = img.style.width;
+                    floatingContainer.appendChild(img);
+                }
+            }
+            
+            // Make sure the image is always visible when the page loads
+            window.addEventListener('load', function() {
+                const newPos = getRandomPosition();
+                targetImage.style.left = newPos.x + 'px';
+                targetImage.style.top = newPos.y + 'px';
+            });
+            
+            // Event listeners
+            gameArea.addEventListener('mousemove', moveImage);
+            targetImage.addEventListener('click', catchImage);
+        });
+    </script>
+</body>
+</html>
